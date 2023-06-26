@@ -15,11 +15,6 @@ public class MouseController : MonoBehaviour
         instance = this;
     }
 
-    //private void Update()
-    //{
-    //    transform.position = MouseController.GetPosition();
-    //}
-
     public static Vector3 GetPosition()
     {
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
