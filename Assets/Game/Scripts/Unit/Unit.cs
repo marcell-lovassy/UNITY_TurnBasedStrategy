@@ -1,6 +1,7 @@
+using Game.Core.Grid;
 using UnityEngine;
 
-namespace Game.Unit 
+namespace Game.UnitSystem 
 {
     public class Unit : MonoBehaviour
     {
@@ -14,10 +15,17 @@ namespace Game.Unit
         private Animator animator;
 
         private Vector3 targetPosition;
+        private GridPosition gridPosition;
+
+        private void Awake()
+        {
+            targetPosition = transform.position;
+        }
 
         private void Start()
         {
-            targetPosition = transform.position;
+            gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
+            LevelGrid.Instance.AddUnitAtGridPosition(gridPosition, this);   
         }
 
         private void Update()
@@ -34,6 +42,13 @@ namespace Game.Unit
             else
             {
                 animator.SetBool("IsMoving", false);
+            }
+
+            GridPosition newGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
+            if(newGridPosition != gridPosition)
+            {
+                LevelGrid.Instance.UnitMovedGridPosition(this, gridPosition, newGridPosition);
+                gridPosition = newGridPosition;
             }
         }
 

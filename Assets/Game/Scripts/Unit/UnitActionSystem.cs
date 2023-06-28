@@ -2,7 +2,7 @@ using Game.Core;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Game.Unit
+namespace Game.UnitSystem
 {
     public class UnitActionSystem : MonoBehaviour
     {

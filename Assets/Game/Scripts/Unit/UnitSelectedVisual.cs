@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Unit
+namespace Game.UnitSystem
 {
     public class UnitSelectedVisual : MonoBehaviour
     {

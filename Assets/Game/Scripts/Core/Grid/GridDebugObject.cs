@@ -18,7 +18,7 @@ namespace Game.Core.Grid
 
         private void Update()
         {
-            gridText.text = gridObject.GetDebugCoordinates();
+            gridText.text = gridObject.GetDebugInfo();
         }
     }
 }
