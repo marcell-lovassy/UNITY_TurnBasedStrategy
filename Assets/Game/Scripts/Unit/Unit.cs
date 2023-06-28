@@ -1,25 +1,21 @@
 using Game.Core.Grid;
+using Game.UnitSystem.Actions;
 using UnityEngine;
 
 namespace Game.UnitSystem 
 {
+    [RequireComponent(typeof(MoveAction))]
     public class Unit : MonoBehaviour
     {
-        [SerializeField]
-        private float moveSpeed;
-        [SerializeField]
-        private float rotationSpeed;
-        [SerializeField]
-        private float stoppingDistance;
-        [SerializeField]
-        private Animator animator;
+        public MoveAction MoveAction => moveAction;
 
-        private Vector3 targetPosition;
         private GridPosition gridPosition;
+
+        private MoveAction moveAction;
 
         private void Awake()
         {
-            targetPosition = transform.position;
+            moveAction = GetComponent<MoveAction>();
         }
 
         private void Start()
@@ -30,20 +26,6 @@ namespace Game.UnitSystem
 
         private void Update()
         {
-            if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
-            {
-                Vector3 moveDirection = (targetPosition - transform.position).normalized;
-                transform.position += moveDirection * Time.deltaTime * moveSpeed;
-
-                transform.forward = Vector3.Lerp(transform.forward, moveDirection, rotationSpeed * Time.deltaTime);
-
-                animator.SetBool("IsMoving", true);
-            }
-            else
-            {
-                animator.SetBool("IsMoving", false);
-            }
-
             GridPosition newGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
             if(newGridPosition != gridPosition)
             {
@@ -51,11 +33,5 @@ namespace Game.UnitSystem
                 gridPosition = newGridPosition;
             }
         }
-
-        public void Move(Vector3 targetPosition)
-        {
-            this.targetPosition = targetPosition;
-        }
     }
-
 }

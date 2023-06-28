@@ -9,14 +9,12 @@ namespace Game.UnitSystem
         public event UnityAction OnSelectedUnitChanged;
 
         public static UnitActionSystem Instance { get; private set; }
-
         public Unit SelectedUnit => selectedUnit;
 
         [SerializeField]
         private Unit selectedUnit;
         [SerializeField]
         private LayerMask unitLayer;
-
 
         private void Awake()
         {
@@ -62,7 +60,7 @@ namespace Game.UnitSystem
             if (selectedUnit != null)
             {
                 Vector3 target = MouseWorldHelper.GetPosition();
-                selectedUnit.Move(target);
+                selectedUnit.MoveAction.Move(target);
             }
         }
     }
