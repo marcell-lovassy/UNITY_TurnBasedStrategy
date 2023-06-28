@@ -43,7 +43,14 @@ namespace Game.Core.Grid
         }
 
         public GridPosition GetGridPosition(Vector3 worldPosition) => gridSystem.GetGridPosition(worldPosition);
-            
+        public Vector3 GetWorldPosition(GridPosition gridPosition) => gridSystem.GetWorldPosition(gridPosition);
+        public bool IsValidGridPosition(GridPosition gridPosition) => gridSystem.IsValidGridPosition(gridPosition);
+
+        public bool HasUnitOnGridPosition(GridPosition gridPosition) 
+        {
+            return gridSystem.GetGridObject(gridPosition).HasAnyUnit();
+        }
+
         public void UnitMovedGridPosition(Unit unit, GridPosition from, GridPosition to) 
         {
             ClearUnitAtGridPosition(unit, from);

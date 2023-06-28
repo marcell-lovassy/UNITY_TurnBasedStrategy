@@ -1,5 +1,6 @@
 using Game.UnitSystem;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Game.Core.Grid
 {
@@ -36,6 +37,11 @@ namespace Game.Core.Grid
         public List<Unit> GetUnitList()
         {
             return unitList;
+        }
+
+        public bool HasAnyUnit()
+        {
+            return unitList.Count > 0;
         }
 
     }

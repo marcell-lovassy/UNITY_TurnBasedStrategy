@@ -20,11 +20,13 @@ namespace Game.UnitSystem.Actions
         [SerializeField]
         private Animator animator;
 
+        private Unit unit;
         private Vector3 targetPosition;
 
         private void Awake()
         {
             targetPosition = transform.position;
+            unit = GetComponent<Unit>();
         }
 
         void Update()
@@ -45,24 +47,45 @@ namespace Game.UnitSystem.Actions
         }
 
 
-        public void Move(Vector3 targetPosition)
+        public void Move(GridPosition targetPosition)
         {
-            this.targetPosition = targetPosition;
+            this.targetPosition = LevelGrid.Instance.GetWorldPosition(targetPosition);
+        }
+
+        public bool IsVaidActionGridPosition(GridPosition gridPosition) 
+        {
+            var validGridPositionList = GetValidActionGridPositions();
+            return validGridPositionList.Contains(gridPosition);
         }
 
         public List<GridPosition> GetValidActionGridPositions()
         {
             List<GridPosition> validGridPositions = new List<GridPosition>();
 
+            GridPosition unitGridPosition = unit.GridPosition;
+
             for (int x = -maxMoveDistance; x <= maxMoveDistance; x++)
             {
                 for (int z = -maxMoveDistance; z <= maxMoveDistance; z++)
                 {
                     GridPosition offsetGridPosition = new GridPosition(x, z);
+                    GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
+
+                    if (IsActionValidOnPosition(unitGridPosition, testGridPosition))
+                    {
+                        validGridPositions.Add(testGridPosition);
+                    }
                 }
             }
 
             return validGridPositions;
+        }
+
+        private bool IsActionValidOnPosition(GridPosition currentPosition, GridPosition possiblePosition) 
+        {
+            return LevelGrid.Instance.IsValidGridPosition(possiblePosition)
+                        && !LevelGrid.Instance.HasUnitOnGridPosition(possiblePosition)
+                        && possiblePosition != currentPosition;
         }
     }
 }

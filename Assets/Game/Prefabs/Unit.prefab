@@ -48,10 +48,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28093afe0c1ac9b45a05ca26540e92f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 4
-  rotationSpeed: 10
-  stoppingDistance: 0.1
-  animator: {fileID: 6715720323049395079}
 --- !u!136 &6139352266958623916
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -79,8 +75,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 4
-  rotationSpeed: 10
+  maxMoveDistance: 4
   stoppingDistance: 0.1
+  rotationSpeed: 10
   animator: {fileID: 6715720323049395079}
 --- !u!1001 &3390250323689158761
 PrefabInstance:

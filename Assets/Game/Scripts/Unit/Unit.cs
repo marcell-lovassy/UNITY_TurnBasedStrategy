@@ -8,9 +8,9 @@ namespace Game.UnitSystem
     public class Unit : MonoBehaviour
     {
         public MoveAction MoveAction => moveAction;
+        public GridPosition GridPosition => gridPosition;
 
         private GridPosition gridPosition;
-
         private MoveAction moveAction;
 
         private void Awake()

@@ -1,4 +1,5 @@
 using Game.Core;
+using Game.Core.Grid;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -60,7 +61,13 @@ namespace Game.UnitSystem
             if (selectedUnit != null)
             {
                 Vector3 target = MouseWorldHelper.GetPosition();
-                selectedUnit.MoveAction.Move(target);
+                GridPosition mouseGridPositzion = LevelGrid.Instance.GetGridPosition(target);
+
+                if (selectedUnit.MoveAction.IsVaidActionGridPosition(mouseGridPositzion))
+                {
+                    Debug.Log("Move");
+                    selectedUnit.MoveAction.Move(mouseGridPositzion);
+                }
             }
         }
     }
