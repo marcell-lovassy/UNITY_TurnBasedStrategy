@@ -65,7 +65,6 @@ namespace Game.UnitSystem
 
                 if (selectedUnit.MoveAction.IsVaidActionGridPosition(mouseGridPositzion))
                 {
-                    Debug.Log("Move");
                     selectedUnit.MoveAction.Move(mouseGridPositzion);
                 }
             }
