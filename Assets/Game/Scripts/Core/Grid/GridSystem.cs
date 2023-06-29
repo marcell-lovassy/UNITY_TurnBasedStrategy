@@ -4,6 +4,10 @@ namespace Game.Core.Grid
 {
     public class GridSystem
     {
+
+        public int Width => width;
+        public int Height => height;
+
         private int width;
         private int height;
         private float cellSize;

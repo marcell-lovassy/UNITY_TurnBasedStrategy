@@ -9,8 +9,19 @@ namespace Game.Core.Grid
     {
         public static LevelGrid Instance { get; private set; }
 
+        public int Width => width;
+        public int Height => height;
+        public float CellSize => cellSize;
+
         [SerializeField]
         private Transform gridDebugObjectPrefab;
+        [SerializeField]
+        private int width;
+        [SerializeField]
+        private int height;
+        [SerializeField]
+        private float cellSize;
+
 
         private GridSystem gridSystem;
 
@@ -23,7 +34,7 @@ namespace Game.Core.Grid
             }
             Instance = this;
 
-            gridSystem = new GridSystem(10, 10, 2f);
+            gridSystem = new GridSystem(width, height, cellSize);
             gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
         }
 
@@ -42,6 +53,9 @@ namespace Game.Core.Grid
             gridSystem.GetGridObject(gridPosition).RemoveUnit(unit);
         }
 
+
+        public int GetWidth() => gridSystem.Width;
+        public int GetHeight() => gridSystem.Height;
         public GridPosition GetGridPosition(Vector3 worldPosition) => gridSystem.GetGridPosition(worldPosition);
         public Vector3 GetWorldPosition(GridPosition gridPosition) => gridSystem.GetWorldPosition(gridPosition);
         public bool IsValidGridPosition(GridPosition gridPosition) => gridSystem.IsValidGridPosition(gridPosition);

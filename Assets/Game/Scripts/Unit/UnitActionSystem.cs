@@ -17,6 +17,8 @@ namespace Game.UnitSystem
         [SerializeField]
         private LayerMask unitLayer;
 
+        private bool isBusy;
+
         private void Awake()
         {
             if (Instance != null)
@@ -29,11 +31,30 @@ namespace Game.UnitSystem
 
         void Update()
         {
+            if (isBusy) return;
+
             if (Input.GetMouseButtonDown(0))
             {
                 if (TryUnitSelection()) return;
+
                 SetUnitMovement();
             }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                SetBusy();
+                selectedUnit.SpinAction.Spin(ClearBusy);
+            }
+        }
+
+        private void SetBusy()
+        {
+            isBusy = true;
+        }
+
+        private void ClearBusy()
+        {
+            isBusy = false;
         }
 
         private bool TryUnitSelection()
@@ -65,7 +86,8 @@ namespace Game.UnitSystem
 
                 if (selectedUnit.MoveAction.IsVaidActionGridPosition(mouseGridPositzion))
                 {
-                    selectedUnit.MoveAction.Move(mouseGridPositzion);
+                    SetBusy();
+                    selectedUnit.MoveAction.Move(mouseGridPositzion, ClearBusy);
                 }
             }
         }

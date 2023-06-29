@@ -8,14 +8,17 @@ namespace Game.UnitSystem
     public class Unit : MonoBehaviour
     {
         public MoveAction MoveAction => moveAction;
+        public SpinAction SpinAction => spinAction;
         public GridPosition GridPosition => gridPosition;
 
         private GridPosition gridPosition;
         private MoveAction moveAction;
+        private SpinAction spinAction;
 
         private void Awake()
         {
             moveAction = GetComponent<MoveAction>();
+            spinAction = GetComponent<SpinAction>();
         }
 
         private void Start()

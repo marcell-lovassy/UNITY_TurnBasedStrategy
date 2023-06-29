@@ -1,10 +1,11 @@
 using Game.Core.Grid;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.UnitSystem.Actions
 {
-    public class MoveAction : MonoBehaviour
+    public class MoveAction : BaseAction
     {
         [Header("Movement Properties")]
         [SerializeField]
@@ -20,36 +21,42 @@ namespace Game.UnitSystem.Actions
         [SerializeField]
         private Animator animator;
 
-        private Unit unit;
         private Vector3 targetPosition;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             targetPosition = transform.position;
-            unit = GetComponent<Unit>();
         }
 
         void Update()
         {
+            if (!isActive) return;
+
+
+            Vector3 moveDirection = (targetPosition - transform.position).normalized;
             if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
             {
-                Vector3 moveDirection = (targetPosition - transform.position).normalized;
                 transform.position += moveDirection * Time.deltaTime * moveSpeed;
-
-                transform.forward = Vector3.Lerp(transform.forward, moveDirection, rotationSpeed * Time.deltaTime);
-
                 animator.SetBool("IsMoving", true);
+
             }
             else
             {
                 animator.SetBool("IsMoving", false);
+                actionCompletedCallback?.Invoke();
+                isActive = false;
             }
+
+            transform.forward = Vector3.Lerp(transform.forward, moveDirection, rotationSpeed * Time.deltaTime);
         }
 
 
-        public void Move(GridPosition targetPosition)
+        public void Move(GridPosition targetPosition, Action moveCompleted)
         {
+            actionCompletedCallback = moveCompleted;
             this.targetPosition = LevelGrid.Instance.GetWorldPosition(targetPosition);
+            isActive = true;
         }
 
         public bool IsVaidActionGridPosition(GridPosition gridPosition) 
