@@ -26,6 +26,7 @@ namespace Game.UnitSystem.Actions
         protected override void Awake()
         {
             base.Awake();
+            actionName = "Move";
             targetPosition = transform.position;
         }
 
@@ -52,20 +53,14 @@ namespace Game.UnitSystem.Actions
         }
 
 
-        public void Move(GridPosition targetPosition, Action moveCompleted)
+        public override void TakeAction(GridPosition targetPosition, Action moveCompleted)
         {
             actionCompletedCallback = moveCompleted;
             this.targetPosition = LevelGrid.Instance.GetWorldPosition(targetPosition);
             isActive = true;
         }
 
-        public bool IsVaidActionGridPosition(GridPosition gridPosition) 
-        {
-            var validGridPositionList = GetValidActionGridPositions();
-            return validGridPositionList.Contains(gridPosition);
-        }
-
-        public List<GridPosition> GetValidActionGridPositions()
+        public override List<GridPosition> GetValidActionGridPositions()
         {
             List<GridPosition> validGridPositions = new List<GridPosition>();
 
@@ -93,6 +88,11 @@ namespace Game.UnitSystem.Actions
             return LevelGrid.Instance.IsValidGridPosition(possiblePosition)
                         && !LevelGrid.Instance.HasUnitOnGridPosition(possiblePosition)
                         && possiblePosition != currentPosition;
+        }
+
+        public override string GetActionName()
+        {
+            return actionName;
         }
     }
 }

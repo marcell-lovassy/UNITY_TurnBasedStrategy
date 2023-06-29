@@ -9,16 +9,20 @@ namespace Game.UnitSystem
     {
         public MoveAction MoveAction => moveAction;
         public SpinAction SpinAction => spinAction;
+        public BaseAction[] ActionArray => actionArray;
         public GridPosition GridPosition => gridPosition;
 
         private GridPosition gridPosition;
         private MoveAction moveAction;
         private SpinAction spinAction;
+        private BaseAction[] actionArray;
 
         private void Awake()
         {
             moveAction = GetComponent<MoveAction>();
             spinAction = GetComponent<SpinAction>();
+
+            actionArray = GetComponents<BaseAction>();
         }
 
         private void Start()

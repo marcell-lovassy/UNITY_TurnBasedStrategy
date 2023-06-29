@@ -1,4 +1,6 @@
+using Game.Core.Grid;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.UnitSystem.Actions 
@@ -10,6 +12,7 @@ namespace Game.UnitSystem.Actions
         protected override void Awake()
         {
             base.Awake();
+            actionName = "Spin";
         }
 
         private void Update()
@@ -28,11 +31,22 @@ namespace Game.UnitSystem.Actions
             }
         }
 
-        public void Spin(Action onSpinComplete)
+        public override void TakeAction(GridPosition gridPosition, Action onSpinComplete)
         {
             actionCompletedCallback = onSpinComplete;
             totalSpinDegrees = 0;
             isActive = true;
+        }
+
+        public override string GetActionName()
+        {
+            return actionName;
+        }
+
+        public override List<GridPosition> GetValidActionGridPositions()
+        {
+            GridPosition unitGridPosition = unit.GridPosition;
+            return new List<GridPosition> { unitGridPosition };
         }
     }
 }
