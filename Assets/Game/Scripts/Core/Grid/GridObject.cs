@@ -39,6 +39,13 @@ namespace Game.Core.Grid
             return unitList;
         }
 
+        public Unit GetUnit()
+        {
+            if(HasAnyUnit()) return unitList.First();
+
+            return null;
+        }
+
         public bool HasAnyUnit()
         {
             return unitList.Count > 0;

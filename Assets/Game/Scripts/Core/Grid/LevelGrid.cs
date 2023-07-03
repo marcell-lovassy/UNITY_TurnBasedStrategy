@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Game.UnitSystem;
+using System.Linq;
 
 namespace Game.Core.Grid
 {
@@ -45,6 +46,11 @@ namespace Game.Core.Grid
         public IReadOnlyCollection<Unit> GetUnitsAtGridPosition(GridPosition gridPosition) 
         {
             return gridSystem.GetGridObject(gridPosition).GetUnitList();
+        }
+
+        public Unit GetUnitAtGridPosition(GridPosition gridPosition)
+        {
+            return gridSystem.GetGridObject(gridPosition).GetUnit();
         }
 
         public void ClearUnitAtGridPosition(Unit unit, GridPosition gridPosition)

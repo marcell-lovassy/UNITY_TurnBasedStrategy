@@ -8,6 +8,8 @@ namespace Game.UnitSystem.Actions
     [RequireComponent(typeof(Unit))]
     public abstract class BaseAction : MonoBehaviour
     {
+        public int ActionPointCost => actionPointCost;
+
         [SerializeField]
         protected int actionPointCost;
 

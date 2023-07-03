@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6139352266958623916}
   - component: {fileID: 1520407932837069317}
   - component: {fileID: 3830808851993256606}
+  - component: {fileID: 7185953736460006273}
   m_Layer: 6
   m_Name: Unit
   m_TagString: Untagged
@@ -49,6 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28093afe0c1ac9b45a05ca26540e92f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isEnemy: 0
 --- !u!136 &6139352266958623916
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -75,6 +77,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe4f03f39bce949449a525a3969a1fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actionPointCost: 0
   moveSpeed: 4
   maxMoveDistance: 3
   stoppingDistance: 0.1
@@ -90,6 +93,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 75edef6df368a3e4580a81bdbc7e2c97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionPointCost: 0
+--- !u!114 &7185953736460006273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4709895553775346641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9186d8ed54348c8478ab703e7098b7ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &3390250323689158761

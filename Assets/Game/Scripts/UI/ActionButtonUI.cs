@@ -9,7 +9,9 @@ namespace Game.UI
     public class ActionButtonUI : MonoBehaviour
     {
         [SerializeField]
-        private TextMeshProUGUI textMeshPro;
+        private TextMeshProUGUI actionNameText;
+        [SerializeField]
+        private TextMeshProUGUI actionCostText;
         [SerializeField]
         private Button button;
         [SerializeField]
@@ -20,8 +22,8 @@ namespace Game.UI
         public void SetAction(BaseAction action)
         {
             this.action = action;
-            textMeshPro.text = action.GetActionName().ToUpper();
-
+            actionNameText.text = action.GetActionName().ToUpper();
+            actionCostText.text = action.ActionPointCost.ToString();
             button.onClick.AddListener(() =>
             {
                 UnitActionSystem.Instance.SetSelectedAction(action);
