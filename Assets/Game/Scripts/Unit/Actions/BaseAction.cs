@@ -8,6 +8,9 @@ namespace Game.UnitSystem.Actions
     [RequireComponent(typeof(Unit))]
     public abstract class BaseAction : MonoBehaviour
     {
+        [SerializeField]
+        protected int actionPointCost;
+
         protected Action actionCompletedCallback;
         protected Unit unit;
         protected bool isActive;
@@ -29,6 +32,11 @@ namespace Game.UnitSystem.Actions
         public abstract List<GridPosition> GetValidActionGridPositions();
 
         public abstract string GetActionName();
+
+        public virtual int GetActionPointCost()
+        {
+            return actionPointCost;
+        }
     }
 
 }

@@ -12,6 +12,7 @@ namespace Game.UnitSystem
         public event UnityAction OnSelectedUnitChanged;
         public event UnityAction OnSelectedActionChanged;
         public event UnityAction<bool> OnBusyChanged;
+        public event UnityAction OnActionStarted;
 
         public static UnitActionSystem Instance { get; private set; }
         public Unit SelectedUnit => selectedUnit;
@@ -57,11 +58,19 @@ namespace Game.UnitSystem
                 Vector3 target = MouseWorldHelper.GetPosition();
                 GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(target);
 
-                if (selectedAction.IsVaidActionGridPosition(mouseGridPosition)) 
+                if (!selectedAction.IsVaidActionGridPosition(mouseGridPosition)) 
                 {
-                    SetBusy();
-                    selectedAction.TakeAction(mouseGridPosition, ClearBusy);
+                    return;
                 }
+                if (!selectedUnit.TrySpendActionPointsToTakeAction(selectedAction)) 
+                {
+                    return;
+                }
+
+                SetBusy();
+                selectedAction.TakeAction(mouseGridPosition, ClearBusy);
+
+                OnActionStarted?.Invoke();
             }
         }
 

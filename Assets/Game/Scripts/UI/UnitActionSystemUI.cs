@@ -1,8 +1,8 @@
 using Game.UnitSystem;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Game.UI
 {
@@ -12,24 +12,47 @@ namespace Game.UI
         private Transform actionButtonPrefab;
         [SerializeField]
         private Transform actionButtonContainer;
+        [SerializeField]
+        private TextMeshProUGUI actionPointsText;
 
         private List<ActionButtonUI> actionButtons = new List<ActionButtonUI>();
 
         private void Start()
         {
-            UnitActionSystem.Instance.OnSelectedUnitChanged += OnUnitChanged;
-            UnitActionSystem.Instance.OnSelectedActionChanged += OnActionChanged;
+            UnitActionSystem.Instance.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
+            UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
+            UnitActionSystem.Instance.OnActionStarted += UnitActionSystem_OnActionStarted;
+            //TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
+            Unit.OnAnyActionPointsChanged += Unit_OnAnyActionPointsChanged;
+
             CreateUnitActionButtons();
             UpdateSelectedVisual();
+            UpdateActionPoints();
         }
 
+        private void Unit_OnAnyActionPointsChanged()
+        {
+            UpdateActionPoints();
+        }
 
-        private void OnUnitChanged()
+        //private void TurnSystem_OnTurnChanged()
+        //{
+        //    UpdateActionPoints();
+        //}
+
+        private void UnitActionSystem_OnActionStarted()
+        {
+            UpdateActionPoints();
+        }
+
+        private void UnitActionSystem_OnSelectedUnitChanged()
         {
             CreateUnitActionButtons();
             UpdateSelectedVisual();
+            UpdateActionPoints();
         }
-        private void OnActionChanged()
+
+        private void UnitActionSystem_OnSelectedActionChanged()
         {
             UpdateSelectedVisual();
         }
@@ -60,6 +83,12 @@ namespace Game.UI
             {
                 actionButton.UpdateSelectedVisual();
             }
+        }
+
+        private void UpdateActionPoints() 
+        {
+            Unit unit = UnitActionSystem.Instance.SelectedUnit;
+            actionPointsText.text = $"Action Points: {unit.AvailableActionPoints}";
         }
     }
 }
