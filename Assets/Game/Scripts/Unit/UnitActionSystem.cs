@@ -44,6 +44,7 @@ namespace Game.UnitSystem
         private void Update()
         {
             if (isBusy) return;
+            if (!TurnSystem.Instance.IsPlayerTurn) return;
             if (EventSystem.current.IsPointerOverGameObject()) return;
 
             if (TryHandleUnitSelection()) return;
@@ -97,6 +98,8 @@ namespace Game.UnitSystem
                     {
                         //already selected
                         if (unit == selectedUnit) return false;
+
+                        if (unit.IsEnemy) return false;
 
                         SetSelectedUnit(unit);
                         return true;

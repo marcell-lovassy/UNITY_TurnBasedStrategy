@@ -8,8 +8,10 @@ public class TurnSystem : MonoBehaviour
     public static TurnSystem Instance;
 
     public int TurnNumber => turnNumber;
+    public bool IsPlayerTurn => isPlayerTurn;
 
     private int turnNumber = 1;
+    private bool isPlayerTurn = true;
 
     private void Awake()
     {
@@ -24,6 +26,7 @@ public class TurnSystem : MonoBehaviour
     public void NextTurn()
     {
         turnNumber++;
+        isPlayerTurn = !isPlayerTurn;
         OnTurnChanged?.Invoke();
     }
 }

@@ -16,6 +16,10 @@ namespace Game.UnitSystem
         public BaseAction[] ActionArray => actionArray;
         public GridPosition GridPosition => gridPosition;
         public int AvailableActionPoints => actionPoints;
+        public bool IsEnemy => isEnemy;
+
+        [SerializeField]
+        private bool isEnemy;
 
         private const int ACTION_POINTS_MAX = 2;
 
@@ -29,7 +33,6 @@ namespace Game.UnitSystem
         {
             moveAction = GetComponent<MoveAction>();
             spinAction = GetComponent<SpinAction>();
-
             actionArray = GetComponents<BaseAction>();
         }
 
@@ -40,12 +43,6 @@ namespace Game.UnitSystem
             TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
         }
 
-        private void TurnSystem_OnTurnChanged()
-        {
-            actionPoints = ACTION_POINTS_MAX;
-            OnAnyActionPointsChanged?.Invoke();
-        }
-
         private void Update()
         {
             GridPosition newGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
@@ -53,6 +50,15 @@ namespace Game.UnitSystem
             {
                 LevelGrid.Instance.UnitMovedGridPosition(this, gridPosition, newGridPosition);
                 gridPosition = newGridPosition;
+            }
+        }
+
+        private void TurnSystem_OnTurnChanged()
+        {
+            if((isEnemy && !TurnSystem.Instance.IsPlayerTurn) || !isEnemy && TurnSystem.Instance.IsPlayerTurn) 
+            {
+                actionPoints = ACTION_POINTS_MAX;
+                OnAnyActionPointsChanged?.Invoke();
             }
         }
 
