@@ -1,9 +1,6 @@
 using Game.UnitSystem.Actions;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
+using static Game.UnitSystem.Actions.ShootAction;
 
 namespace Game.UnitSystem 
 {
@@ -11,6 +8,13 @@ namespace Game.UnitSystem
     {
         [SerializeField]
         private Animator animator;
+
+        [Space]
+        [Header("Effect references")]
+        [SerializeField]
+        private BulletProjectile bulletProjectilePrefab;
+        [SerializeField]
+        private Transform shootPointTransform;
 
         private void Awake()
         {
@@ -26,9 +30,14 @@ namespace Game.UnitSystem
             }
         }
 
-        private void ShootAction_OnShoot()
+        private void ShootAction_OnShoot(object sender, ShootEventArgs args)
         {
             animator.SetTrigger("Shoot");
+            BulletProjectile bulletProjectile = Instantiate(bulletProjectilePrefab, shootPointTransform.position, Quaternion.identity);
+
+            Vector3 targetUnitShootAtPosition = args.targetUnit.WorldPosition;
+            targetUnitShootAtPosition.y = shootPointTransform.position.y;
+            bulletProjectile.Setup(targetUnitShootAtPosition);
         }
 
         private void MoveAction_OnStopMoving()

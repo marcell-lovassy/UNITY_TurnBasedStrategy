@@ -9,7 +9,13 @@ namespace Game.UnitSystem.Actions
 {
     public class ShootAction : BaseAction
     {
-        public event UnityAction OnShoot;
+        public event EventHandler<ShootEventArgs> OnShoot;
+
+        public class ShootEventArgs : EventArgs 
+        {
+            public Unit targetUnit;
+            public Unit shootingUnit;
+        }
 
         private enum ShootingState
         {
@@ -69,8 +75,8 @@ namespace Game.UnitSystem.Actions
 
         private void Shoot()
         {
-            OnShoot?.Invoke();
-            targetUnit.TakeDamage();
+            OnShoot?.Invoke(this, new ShootEventArgs() { shootingUnit = unit, targetUnit = targetUnit });
+            targetUnit.TakeDamage(40);
         }
 
         private void NextState()

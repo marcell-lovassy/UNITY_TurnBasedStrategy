@@ -6,7 +6,6 @@ using UnityEngine.Events;
 
 namespace Game.UnitSystem 
 {
-    [RequireComponent(typeof(MoveAction))]
     public class Unit : MonoBehaviour
     {
         public static event UnityAction OnAnyActionPointsChanged;
@@ -28,6 +27,8 @@ namespace Game.UnitSystem
         private MoveAction moveAction;
         private SpinAction spinAction;
         private BaseAction[] actionArray;
+        private HealthSystem healthSystem;
+        private RagdollSpawner ragdollSpawner;
         private int actionPoints = ACTION_POINTS_MAX;
 
         private void Awake()
@@ -35,6 +36,8 @@ namespace Game.UnitSystem
             moveAction = GetComponent<MoveAction>();
             spinAction = GetComponent<SpinAction>();
             actionArray = GetComponents<BaseAction>();
+            healthSystem = GetComponent<HealthSystem>();
+            ragdollSpawner = GetComponent<RagdollSpawner>();
         }
 
         private void Start()
@@ -42,6 +45,14 @@ namespace Game.UnitSystem
             gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
             LevelGrid.Instance.AddUnitAtGridPosition(gridPosition, this);
             TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
+
+            healthSystem.OnDead += HealthSystem_OnDead;
+        }
+
+        private void HealthSystem_OnDead()
+        {
+            LevelGrid.Instance.ClearUnitAtGridPosition(this, gridPosition);
+            Destroy(gameObject);
         }
 
         private void Update()
@@ -51,15 +62,6 @@ namespace Game.UnitSystem
             {
                 LevelGrid.Instance.UnitMovedGridPosition(this, gridPosition, newGridPosition);
                 gridPosition = newGridPosition;
-            }
-        }
-
-        private void TurnSystem_OnTurnChanged()
-        {
-            if((isEnemy && !TurnSystem.Instance.IsPlayerTurn) || !isEnemy && TurnSystem.Instance.IsPlayerTurn) 
-            {
-                actionPoints = ACTION_POINTS_MAX;
-                OnAnyActionPointsChanged?.Invoke();
             }
         }
 
@@ -79,15 +81,25 @@ namespace Game.UnitSystem
             return actionPoints >= baseAction.GetActionPointCost();
         }
 
+        private void TurnSystem_OnTurnChanged()
+        {
+            if((isEnemy && !TurnSystem.Instance.IsPlayerTurn) || !isEnemy && TurnSystem.Instance.IsPlayerTurn) 
+            {
+                actionPoints = ACTION_POINTS_MAX;
+                OnAnyActionPointsChanged?.Invoke();
+            }
+        }
+
+
         private void SpendActionPoints(int amount) 
         {
             actionPoints -= amount;
             OnAnyActionPointsChanged?.Invoke();
         }
 
-        internal void TakeDamage()
+        internal void TakeDamage(int dmg)
         {
-            Debug.Log($"{name} took damage");
+            healthSystem.TakeDamage(dmg);
         }
     }
 }

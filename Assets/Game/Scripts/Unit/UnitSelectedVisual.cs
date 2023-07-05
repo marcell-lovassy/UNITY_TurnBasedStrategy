@@ -29,5 +29,10 @@ namespace Game.UnitSystem
         {
             meshRenderer.enabled = UnitActionSystem.Instance.SelectedUnit == unit;
         }
+
+        private void OnDestroy()
+        {
+            UnitActionSystem.Instance.OnSelectedUnitChanged -= SelectedUnitChanged;
+        }
     }
 }
