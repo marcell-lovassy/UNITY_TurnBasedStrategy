@@ -39,6 +39,18 @@ namespace Game.UnitSystem.Actions
         {
             return actionPointCost;
         }
+
+        protected void ActionStart(Action onActionComplete)
+        {
+            isActive = true;
+            actionCompletedCallback = onActionComplete;
+        }
+
+        protected void ActionComplete()
+        {
+            isActive = false;
+            actionCompletedCallback?.Invoke();
+        }
     }
 
 }

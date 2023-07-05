@@ -15,6 +15,7 @@ namespace Game.UnitSystem
         public SpinAction SpinAction => spinAction;
         public BaseAction[] ActionArray => actionArray;
         public GridPosition GridPosition => gridPosition;
+        public Vector3 WorldPosition => transform.position;
         public int AvailableActionPoints => actionPoints;
         public bool IsEnemy => isEnemy;
 
@@ -82,6 +83,11 @@ namespace Game.UnitSystem
         {
             actionPoints -= amount;
             OnAnyActionPointsChanged?.Invoke();
+        }
+
+        internal void TakeDamage()
+        {
+            Debug.Log($"{name} took damage");
         }
     }
 }

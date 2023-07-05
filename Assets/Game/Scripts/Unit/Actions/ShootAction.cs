@@ -3,16 +3,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Game.UnitSystem.Actions
 {
     public class ShootAction : BaseAction
     {
+        public event UnityAction OnShoot;
+
+        private enum ShootingState
+        {
+            Aiming,
+            Shooting,
+            Cooloff,
+        }
+
         [SerializeField]
         private int maxShootDistance;
 
-        private float totalSpinDegrees;
+        private ShootingState state;
+        private float stateTimer;
+        private float aimingStateTime = 1f;
+        private float shootingStateTime = 0.1f;
+        private float coolOffStateTime = 0.5f;
+        private float aimRotationSpeed = 10f;
 
+        private bool canShootBullet;
+        private Unit targetUnit;
 
 
         protected override void Awake()
@@ -25,23 +42,63 @@ namespace Game.UnitSystem.Actions
         {
             if (!isActive) return;
 
-            float spinDegrees = 360f * Time.deltaTime;
-            transform.eulerAngles += new Vector3(0, spinDegrees, 0);
+            stateTimer -= Time.deltaTime;
 
-            totalSpinDegrees += spinDegrees;
-
-            if (totalSpinDegrees >= 360f)
+            switch (state)
             {
-                isActive = false;
-                actionCompletedCallback?.Invoke();
+                case ShootingState.Aiming:
+                    Vector3 aimDirection = (targetUnit.WorldPosition - unit.WorldPosition).normalized;
+                    transform.forward = Vector3.Lerp(transform.forward, aimDirection, aimRotationSpeed * Time.deltaTime);
+                    break;
+                case ShootingState.Shooting:
+                    if (canShootBullet) 
+                    {
+                        Shoot();
+                        canShootBullet = false;
+                    }
+                    break;
+                case ShootingState.Cooloff:
+                    break;
+            }
+
+            if (stateTimer <= 0f) 
+            {
+                NextState();
             }
         }
 
-        public override void TakeAction(GridPosition gridPosition, Action onSpinComplete)
+        private void Shoot()
         {
-            actionCompletedCallback = onSpinComplete;
-            totalSpinDegrees = 0;
-            isActive = true;
+            OnShoot?.Invoke();
+            targetUnit.TakeDamage();
+        }
+
+        private void NextState()
+        {
+            switch (state)
+            {
+                case ShootingState.Aiming:
+                    state = ShootingState.Shooting;
+                    stateTimer = shootingStateTime;
+                    break;
+                case ShootingState.Shooting:
+                    state = ShootingState.Cooloff;
+                    stateTimer = coolOffStateTime;
+                    break;
+                case ShootingState.Cooloff:
+                    ActionComplete();
+                    break;
+            }
+        }
+
+        public override void TakeAction(GridPosition gridPosition, Action onShootComplete)
+        {
+            ActionStart(onShootComplete);
+            state = ShootingState.Aiming;
+            stateTimer = aimingStateTime;
+
+            targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
+            canShootBullet = true;
         }
 
         public override string GetActionName()
@@ -62,6 +119,18 @@ namespace Game.UnitSystem.Actions
                     GridPosition offsetGridPosition = new GridPosition(x, z);
                     GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
 
+                    if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
+                    {
+                        continue;
+                    }
+
+                    int testDistance = Mathf.Abs(x) + Mathf.Abs(z);
+
+                    if(testDistance > maxShootDistance + 1) 
+                    {
+                        continue;
+                    }
+
                     if (IsActionValidOnPosition(unitGridPosition, testGridPosition))
                     {
                         validGridPositions.Add(testGridPosition);
@@ -74,7 +143,6 @@ namespace Game.UnitSystem.Actions
 
         private bool IsActionValidOnPosition(GridPosition currentPosition, GridPosition possiblePosition)
         {
-            if (!LevelGrid.Instance.IsValidGridPosition(possiblePosition)) return false;
             var unitAtPosition = LevelGrid.Instance.GetUnitAtGridPosition(possiblePosition);
             if (unitAtPosition == null) return false;
 

@@ -26,16 +26,14 @@ namespace Game.UnitSystem.Actions
 
             if(totalSpinDegrees >= 360f)
             {
-                isActive = false;
-                actionCompletedCallback?.Invoke();
+                ActionComplete();
             }
         }
 
         public override void TakeAction(GridPosition gridPosition, Action onSpinComplete)
         {
-            actionCompletedCallback = onSpinComplete;
+            ActionStart(onSpinComplete);
             totalSpinDegrees = 0;
-            isActive = true;
         }
 
         public override string GetActionName()

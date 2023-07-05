@@ -2,11 +2,15 @@ using Game.Core.Grid;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Game.UnitSystem.Actions
 {
     public class MoveAction : BaseAction
     {
+        public event UnityAction OnStartMoving;
+        public event UnityAction OnStopMoving;
+
         [Header("Movement Properties")]
         [SerializeField]
         private float moveSpeed;
@@ -16,10 +20,6 @@ namespace Game.UnitSystem.Actions
         private float stoppingDistance;
         [SerializeField]
         private float rotationSpeed;
-
-        [Space]
-        [SerializeField]
-        private Animator animator;
 
         private Vector3 targetPosition;
 
@@ -39,25 +39,25 @@ namespace Game.UnitSystem.Actions
             if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
             {
                 transform.position += moveDirection * Time.deltaTime * moveSpeed;
-                animator.SetBool("IsMoving", true);
 
             }
             else
             {
-                animator.SetBool("IsMoving", false);
-                actionCompletedCallback?.Invoke();
-                isActive = false;
+
+                OnStopMoving?.Invoke();
+                ActionComplete();
             }
 
             transform.forward = Vector3.Lerp(transform.forward, moveDirection, rotationSpeed * Time.deltaTime);
         }
 
 
-        public override void TakeAction(GridPosition targetPosition, Action moveCompleted)
+        public override void TakeAction(GridPosition targetPosition, Action onMoveComplete)
         {
-            actionCompletedCallback = moveCompleted;
+            ActionStart(onMoveComplete);
             this.targetPosition = LevelGrid.Instance.GetWorldPosition(targetPosition);
-            isActive = true;
+
+            OnStartMoving?.Invoke();
         }
 
         public override List<GridPosition> GetValidActionGridPositions()
